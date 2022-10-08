@@ -1,4 +1,4 @@
-import mongoose, { Collection } from "mongoose";
+import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema({
     username: { type: String, requried: true },
