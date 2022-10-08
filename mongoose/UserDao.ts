@@ -7,7 +7,7 @@ export default class UserDao implements IUserDao {
     async findAllUsers(): Promise<User[]> {
         return UserModel.find();
     }
-    async findUserById(uid: string): Promise<any> {
+    async findUserById(uid: string): Promise<User | null> {
         return UserModel.findById(uid);
     }
     async createUser(user: User): Promise<User> {
