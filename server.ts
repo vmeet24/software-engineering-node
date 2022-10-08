@@ -3,7 +3,9 @@
  */
 import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
+import TuitController from './Controllers/TuitController';
 import UserController from './Controllers/UserController';
+import TuitDao from './mongoose/TuitDao';
 import UserDao from './mongoose/UserDao';
 const cors = require('cors');
 const app = express();
@@ -13,6 +15,9 @@ mongoose.connect('mongodb://localhost:27017/tuitDB');
 
 const userDao = new UserDao();
 new UserController(app, userDao);
+
+const tuitDao = new TuitDao();
+new TuitController(app, tuitDao);
 
 app.get('/', (req: Request, res: Response) =>
     res.send('Welcome to Foundation of Software Engineering!!!!'));

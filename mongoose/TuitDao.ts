@@ -2,12 +2,12 @@ import ITuitDao from "../interfaces/ITuitDao";
 import Tuit from "../models/Tuit";
 import TuitModel from "./TuitModel";
 
-class TuitDao implements ITuitDao {
+export default class TuitDao implements ITuitDao {
     async findAllTuits(): Promise<Tuit[]> {
         return TuitModel.find();
     }
     async findTuitsByUser(uid: string): Promise<Tuit[]> {
-        return TuitModel.findById({ postedBy: uid }).populate('postedBy').exec();
+        return TuitModel.find({ postedBy: uid }).populate('postedBy').exec();
     }
     async findTuitById(tid: string): Promise<Tuit | null> {
         return TuitModel.findById(tid);
