@@ -2,13 +2,13 @@ import { Request, Response, Express } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
 import { ParsedQs } from "qs";
 import ITuitController from "../interfaces/ITuitController";
-import TuitDao from '../mongoose/TuitDao';
+import ITuitDao from "../interfaces/ITuitDao";
 
 export default class TuitController implements ITuitController {
 
     private app: Express;
-    private tuitDao: TuitDao;
-    constructor(app: Express, tuitDao: TuitDao) {
+    private tuitDao: ITuitDao;
+    constructor(app: Express, tuitDao: ITuitDao) {
         this.app = app;
         this.tuitDao = tuitDao;
         this.app.get('/api/tuits', this.findAllTuits);

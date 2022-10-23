@@ -2,12 +2,12 @@ import { Request, Response, Express } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
 import { ParsedQs } from "qs";
 import IUserController from "../interfaces/IUserController";
-import UserDao from "../mongoose/UserDao";
+import IUserDao from "../interfaces/IUserDao";
 
 export default class UserController implements IUserController {
     private app: Express;
-    private userDao: UserDao;
-    constructor(app: Express, userDao: UserDao) {
+    private userDao: IUserDao;
+    constructor(app: Express, userDao: IUserDao) {
         this.app = app;
         this.userDao = userDao;
         this.app.get('/users', this.findAllUsers);

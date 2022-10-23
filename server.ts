@@ -3,9 +3,11 @@
  */
 import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
+import FollowController from './Controllers/FollowController';
 import LikeController from './Controllers/LikeController';
 import TuitController from './Controllers/TuitController';
 import UserController from './Controllers/UserController';
+import FollowDao from './mongoose/FollowDao';
 import LikeDao from './mongoose/LikeDao';
 import TuitDao from './mongoose/TuitDao';
 import UserDao from './mongoose/UserDao';
@@ -24,6 +26,9 @@ new TuitController(app, tuitDao);
 const likesDao = new LikeDao();
 new LikeController(app, likesDao);
 
+const followDao = new FollowDao();
+new FollowController(app, followDao);
+
 app.get('/', (req: Request, res: Response) =>
     res.send('Welcome to Foundation of Software Engineering!!!!'));
 
@@ -34,7 +39,7 @@ app.get('/hello', (req: Request, res: Response) =>
  * Start a server listening at port 4001 locally
  * but use environment variable PORT on Heroku if available.
  */
-const PORT = 4001;
+const PORT = 4002;
 app.listen(process.env.PORT || PORT, () => {
     console.log("Up and Running!");
 });

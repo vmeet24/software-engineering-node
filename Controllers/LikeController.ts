@@ -2,8 +2,8 @@
  * @file Controller RESTful Web service API for likes resource
  */
 import { Express, Request, Response } from "express";
-import LikeDao from "../mongoose/LikeDao";
 import ILikeController from "../interfaces/ILikeController";
+import ILikeDao from "../interfaces/ILikeDao";
 
 /**
  * @class TuitController Implements RESTful Web service API for likes resource.
@@ -18,20 +18,20 @@ import ILikeController from "../interfaces/ILikeController";
  *     <li>DELETE /api/users/:uid/unlikes/:tid to record that a user
  *     no londer likes a tuit</li>
  * </ul>
- * @property {LikeDao} likeDao Singleton DAO implementing likes CRUD operations
- * @property {LikeController} LikeController Singleton controller implementing
+ * @property {ILikeDao} likeDao DAO implementing likes CRUD operations
  * RESTful Web service API
  */
 export default class LikeController implements ILikeController {
-    private likeDao: LikeDao;
+    private likeDao: ILikeDao;
     private app: Express;
     /**
-     * Creates singleton controller instance
+     * Creates controller instance
+     * @param {ILikeDao} likeDao DAO implementing likes CRUD operations
      * @param {Express} app Express instance to declare the RESTful Web service
      * API
      * @return TuitController
      */
-    constructor(app: Express, likeDao: LikeDao) {
+    constructor(app: Express, likeDao: ILikeDao) {
         this.app = app;
         this.likeDao = likeDao;
         this.app.get("/api/users/:uid/likes", this.findAllTuitsLikedByUser);
