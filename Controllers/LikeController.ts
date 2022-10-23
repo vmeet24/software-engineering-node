@@ -19,6 +19,7 @@ import ILikeDao from "../interfaces/ILikeDao";
  *     no londer likes a tuit</li>
  * </ul>
  * @property {ILikeDao} likeDao DAO implementing likes CRUD operations
+ * @property {Express} app Express instance to declare the RESTful Web service
  * RESTful Web service API
  */
 export default class LikeController implements ILikeController {

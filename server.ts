@@ -6,11 +6,13 @@ import mongoose from 'mongoose';
 import BookmarkController from './Controllers/BookmarkController';
 import FollowController from './Controllers/FollowController';
 import LikeController from './Controllers/LikeController';
+import MessageController from './Controllers/MessageController';
 import TuitController from './Controllers/TuitController';
 import UserController from './Controllers/UserController';
 import BookmarkDao from './mongoose/BookmarkDao';
 import FollowDao from './mongoose/FollowDao';
 import LikeDao from './mongoose/LikeDao';
+import MessageDao from './mongoose/MessageDao';
 import TuitDao from './mongoose/TuitDao';
 import UserDao from './mongoose/UserDao';
 const cors = require('cors');
@@ -33,6 +35,9 @@ new FollowController(app, followDao);
 
 const bookmarkDao = new BookmarkDao();
 new BookmarkController(app, bookmarkDao);
+
+const messageDao = new MessageDao();
+new MessageController(app, messageDao);
 
 app.get('/', (req: Request, res: Response) =>
     res.send('Welcome to Foundation of Software Engineering!!!!'));
