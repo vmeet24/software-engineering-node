@@ -1,3 +1,7 @@
+/**
+ * @file Model class for User
+ */
+
 import AccountType from "./AccountType";
 import MaritalStatus from "./MaritalStatus";
 import Location from "./Location";

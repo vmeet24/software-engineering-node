@@ -1,3 +1,7 @@
+/**
+ * @file enum for AccountType
+ */
+
 enum AccountType {
     Personal = 'PERSONAL',
     Academic = 'ACADEMIC',

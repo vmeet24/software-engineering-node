@@ -1,5 +1,5 @@
 /**
- * @file Model class for Like
+ * @file Model interface class for Like
  */
 
 import Tuit from "./Tuit";

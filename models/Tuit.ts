@@ -1,3 +1,7 @@
+/**
+ * @file Model class for Tuit
+ */
+
 import User from "./User";
 
 export default class Tuit {
