@@ -20,7 +20,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect('mongodb+srv://vmeet24:4qS0GH7E1jL3o8IX@cluster0.2q2gfmo.mongodb.net/FSE?retryWrites=true&w=majority')
+mongoose.connect(`mongodb+srv://${process.env.USER}:${process.env.PASS}@cluster0.2q2gfmo.mongodb.net/FSE?retryWrites=true&w=majority`);
 // client.connect((err: any) => {
 //     const collection = client.db("test").collection("devices");
 //     // perform actions on the collection object
