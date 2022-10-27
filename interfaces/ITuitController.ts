@@ -1,3 +1,7 @@
+/**
+ * @file Declares controller RESTful API for Tuits resource
+ */
+
 import { Request, Response } from "express";
 
 export default interface ITuitController {

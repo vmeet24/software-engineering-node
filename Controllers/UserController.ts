@@ -10,11 +10,11 @@ export default class UserController implements IUserController {
     constructor(app: Express, userDao: IUserDao) {
         this.app = app;
         this.userDao = userDao;
-        this.app.get('api/users', this.findAllUsers);
-        this.app.get('api/users/:userid', this.findUserById);
-        this.app.post('api/users', this.createUser);
-        this.app.delete('api/users/:userid', this.deleteUser);
-        this.app.put('api/users/:userid', this.updateUser);
+        this.app.get('/api/users', this.findAllUsers);
+        this.app.get('/api/users/:userid', this.findUserById);
+        this.app.post('/api/users', this.createUser);
+        this.app.delete('/api/users/:userid', this.deleteUser);
+        this.app.put('/api/users/:userid', this.updateUser);
     }
 
     findAllUsers = async (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Promise<void> => {

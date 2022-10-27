@@ -1,3 +1,7 @@
+/**
+ * @file Declares controller RESTful API for Users resource
+ */
+
 import { Request, Response } from "express";
 
 export default interface IUserController {

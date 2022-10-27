@@ -1,3 +1,7 @@
+/**
+ * @file Declares API for Bookmarks related data access object methods
+ */
+
 import User from "../models/User";
 
 export default interface IUserDao {

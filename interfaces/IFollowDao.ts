@@ -1,3 +1,7 @@
+/**
+ * @file Declares API for Follows related data access object methods
+ */
+
 import Follow from "../models/Follow";
 
 export default interface IFollowDao {
