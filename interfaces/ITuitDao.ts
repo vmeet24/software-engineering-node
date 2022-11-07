@@ -8,7 +8,8 @@ export default interface ITuitDao {
     findAllTuits(): Promise<Tuit[]>;
     findTuitsByUser(uid: string): Promise<Tuit[]>;
     findTuitById(tid: string): Promise<Tuit | null>;
-    createTuit(tuit: Tuit): Promise<Tuit>;
+    createTuit(userid: string, tuit: Tuit): Promise<Tuit>;
     updateTuit(tid: string, tuit: Tuit): Promise<any>;
     deleteTuit(tid: string): Promise<any>;
+    deleteTuitByUserId(uid: string): Promise<any>;
 }

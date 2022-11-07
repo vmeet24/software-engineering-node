@@ -20,7 +20,7 @@ export default class TuitDao implements ITuitDao {
      * database
      */
     async findAllTuits(): Promise<Tuit[]> {
-        return TuitModel.find();
+        return await TuitModel.find();
     }
 
     /**
@@ -29,7 +29,7 @@ export default class TuitDao implements ITuitDao {
      * @returns Promise To be notified when tuit is retrieved from the database
      */
     async findTuitsByUser(uid: string): Promise<Tuit[]> {
-        return TuitModel.find({ postedBy: uid }, { postedBy: 0 }).populate('postedBy').exec();
+        return await TuitModel.find({ postedBy: uid }, { postedBy: 0 }).populate('postedBy').exec();
     }
 
     /**
@@ -38,7 +38,7 @@ export default class TuitDao implements ITuitDao {
     * @returns Promise To be notified when tuit is retrieved from the database
     */
     async findTuitById(tid: string): Promise<Tuit | null> {
-        return TuitModel.findById(tid);
+        return await TuitModel.findById(tid);
     }
 
     /**
@@ -46,8 +46,8 @@ export default class TuitDao implements ITuitDao {
      * @param {Tuit} tuit Instance to be inserted into the database
      * @returns Promise To be notified when tuit is inserted into the database
      */
-    async createTuit(tuit: Tuit): Promise<Tuit> {
-        return TuitModel.create(tuit);
+    async createTuit(userid: string, tuit: Tuit): Promise<Tuit> {
+        return await TuitModel.create({ ...tuit, postedBy: userid });
     }
 
     /**
@@ -57,7 +57,7 @@ export default class TuitDao implements ITuitDao {
      * @returns Promise To be notified when tuit is updated in the database
      */
     async updateTuit(tid: string, tuit: Tuit): Promise<any> {
-        return TuitModel.updateOne({ _id: tid }, { $set: tuit });
+        return await TuitModel.updateOne({ _id: tid }, { $set: tuit });
     }
 
     /**
@@ -66,6 +66,16 @@ export default class TuitDao implements ITuitDao {
     * @returns Promise To be notified when tuit is removed from the database
     */
     async deleteTuit(tid: string): Promise<any> {
-        return TuitModel.deleteOne({ _id: tid });
+        return await TuitModel.deleteOne({ _id: tid });
     }
+
+    /**
+     * Removes tuit from the database. Used for testing
+     * @param {string} uid Primary key of the dummy user whose tuit to be removed
+     * @returns Promise To be notified when tuit is removed from the database
+     */
+    async deleteTuitByUserId(uid: string): Promise<any> {
+        return await TuitModel.deleteOne({ postedBy: uid });
+    }
+
 }

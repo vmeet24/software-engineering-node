@@ -15,6 +15,8 @@ export default class UserController implements IUserController {
         this.app.post('/api/users', this.createUser);
         this.app.delete('/api/users/:userid', this.deleteUser);
         this.app.put('/api/users/:userid', this.updateUser);
+
+        app.get("/api/users/username/:username/delete", this.deleteUsersByUsername);
     }
 
     findAllUsers = async (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Promise<void> => {
@@ -36,5 +38,15 @@ export default class UserController implements IUserController {
     updateUser = async (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Promise<void> => {
         const users = await this.userDao.updateUser(req.params.userid, req.body);
         res.json(users);
+    }
+    /**
+    * Removes user instance with the given username from the database.
+    * @param {Request} req Represents request from client
+    * @param {Response} res Represents response to client, including status
+    * on whether deleting user was successful or not
+    */
+    deleteUsersByUsername = async (req: Request, res: Response) => {
+        const result = await this.userDao.deleteUsersByUsername(req.params.username);
+        res.json(result);
     }
 }

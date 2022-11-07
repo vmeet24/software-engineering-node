@@ -13,10 +13,12 @@ export default class TuitController implements ITuitController {
         this.tuitDao = tuitDao;
         this.app.get('/api/tuits', this.findAllTuits);
         this.app.get('/api/tuits/:tuitid', this.findTuitById);
-        this.app.get('/api/user/:userid/tuits', this.findTuitsByUser);
-        this.app.post('/api/tuits', this.createTuit);
+        this.app.get('/api/users/:userid/tuits', this.findTuitsByUser);
+        this.app.post('/api/users/:userid/tuits', this.createTuit);
         this.app.put('/api/tuits/:tuitid', this.updateTuit);
         this.app.delete('/api/tuits/:tuitid', this.deleteTuit);
+
+        app.get("/api/tuits/:uid/delete", this.deleteTuitByUserId);
     }
 
 
@@ -33,7 +35,7 @@ export default class TuitController implements ITuitController {
         res.json(tuits);
     }
     createTuit = async (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Promise<void> => {
-        const tuit = await this.tuitDao.createTuit(req.body);
+        const tuit = await this.tuitDao.createTuit(req.params.userid, req.body);
         res.json(tuit);
     }
     updateTuit = async (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Promise<void> => {
@@ -44,4 +46,15 @@ export default class TuitController implements ITuitController {
         const tuit = await this.tuitDao.deleteTuit(req.params.tuitid);
         res.json(tuit);
     }
+    /**
+     * @param {Request} req Represents request from client, including path
+     * parameter uid identifying the primary key of the dummy user's tuit to be removed
+     * @param {Response} res Represents response to client, including status
+     * on whether deleting a tuit was successful or not
+     */
+    deleteTuitByUserId = async (req: Request, res: Response) => {
+        const result = await this.tuitDao.deleteTuitByUserId(req.params.uid);
+        res.json(result);
+    }
+
 }
