@@ -18,7 +18,7 @@ export default class TuitController implements ITuitController {
         this.app.put('/api/tuits/:tuitid', this.updateTuit);
         this.app.delete('/api/tuits/:tuitid', this.deleteTuit);
 
-        app.get("/api/tuits/:uid/delete", this.deleteTuitByUserId);
+        app.delete("/api/tuits/:uid/delete", this.deleteTuitByUserId);
     }
 
 

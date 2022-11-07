@@ -16,7 +16,7 @@ export default class UserController implements IUserController {
         this.app.delete('/api/users/:userid', this.deleteUser);
         this.app.put('/api/users/:userid', this.updateUser);
 
-        app.get("/api/users/username/:username/delete", this.deleteUsersByUsername);
+        app.delete("/api/users/username/:username/delete", this.deleteUsersByUsername);
     }
 
     findAllUsers = async (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>): Promise<void> => {
