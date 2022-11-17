@@ -65,11 +65,10 @@ new UserController(app, userDao);
 const tuitDao = new TuitDao();
 new TuitController(app, tuitDao);
 
-const likesDao = new LikeDao();
-new LikeController(app, likesDao, tuitDao);
-
 const dislikeDao = new DislikeDao();
-new DislikeController(app, dislikeDao, tuitDao);
+const likesDao = new LikeDao();
+new DislikeController(app, dislikeDao, likesDao, tuitDao);
+new LikeController(app, likesDao, dislikeDao, tuitDao);
 
 const followDao = new FollowDao();
 new FollowController(app, followDao);

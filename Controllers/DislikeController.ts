@@ -4,6 +4,7 @@
 import { Express, Request, Response } from "express";
 import IDislikeController from "../interfaces/IDislikeController";
 import IDislikeDao from "../interfaces/IDislikeDao";
+import ILikeDao from "../interfaces/ILikeDao";
 import ITuitDao from "../interfaces/ITuitDao";
 
 
@@ -23,6 +24,7 @@ import ITuitDao from "../interfaces/ITuitDao";
  */
 export default class DislikeController implements IDislikeController {
     private dislikeDao: IDislikeDao;
+    private likeDao: ILikeDao;
     private tuitDao: ITuitDao;
 
     /**
@@ -31,8 +33,9 @@ export default class DislikeController implements IDislikeController {
      * API
      * @return DislikeController
      */
-    constructor(app: Express, dislikeDao: IDislikeDao, tuitDao: ITuitDao) {
+    constructor(app: Express, dislikeDao: IDislikeDao, likeDao: ILikeDao, tuitDao: ITuitDao) {
         this.dislikeDao = dislikeDao;
+        this.likeDao = likeDao;
         this.tuitDao = tuitDao;
         app.get("/api/users/:uid/dislikes/:tid", this.findUserDislikedTuit);
         app.put("/api/users/:uid/dislikes/:tid", this.userTogglesTuitDislikes);
@@ -70,8 +73,6 @@ export default class DislikeController implements IDislikeController {
      * database
      */
     userTogglesTuitDislikes = async (req: Request, res: Response) => {
-        const dislikeDao = this.dislikeDao;
-        const tuitDao = this.tuitDao;
         const uid = req.params.uid;
         const tid = req.params.tid;
         // @ts-ignore
@@ -83,18 +84,28 @@ export default class DislikeController implements IDislikeController {
             return;
         }
         try {
-            const userAlreadyLikedTuit = await dislikeDao.findUserDislikesTuit(userId, tid);
-            const howManyLikedTuit = await dislikeDao.countHowManyDisikedTuit(tid);
-            let tuit = await tuitDao.findTuitById(tid);
+            const userAlreadyDislikedTuit = await this.dislikeDao.findUserDislikesTuit(userId, tid);
+            const howManyDislikedTuit = await this.dislikeDao.countHowManyDisikedTuit(tid);
+            let tuit = await this.tuitDao.findTuitById(tid);
             if (tuit != null) {
-                if (userAlreadyLikedTuit) {
-                    await dislikeDao.userUndoDislikeTuit(userId, tid);
-                    tuit.stats.dislikes = howManyLikedTuit - 1;
+                if (userAlreadyDislikedTuit != null) {
+                    await this.dislikeDao.userUndoDislikeTuit(userId, tid);
+                    tuit.stats.dislikes = howManyDislikedTuit - 1;
+                    console.log("Dislike-controller", userAlreadyDislikedTuit);
                 } else {
+                    const userAlreadyLikedTuit = await this.likeDao
+                        .findUserLikesTuit(userId, tid);
+                    const howManyLikedTuit = await this.likeDao
+                        .countHowManyLikedTuit(tid);
+                    if (userAlreadyLikedTuit != null) {
+                        await this.likeDao.userUnlikesTuit(userId, tid);
+                        tuit.stats.likes = howManyLikedTuit - 1;
+                        console.log("userAlreadyLikedTuit");
+                    }
                     await this.dislikeDao.userDislikesTuit(userId, tid);
-                    tuit.stats.dislikes = howManyLikedTuit + 1;
+                    tuit.stats.dislikes = howManyDislikedTuit + 1;
                 }
-                await tuitDao.updateLikes(tid, tuit.stats);
+                await this.tuitDao.updateLikes(tid, tuit.stats);
                 res.sendStatus(200);
             } else {
                 res.sendStatus(404);
