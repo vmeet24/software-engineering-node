@@ -71,4 +71,14 @@ export default class LikeDao implements ILikeDao {
     async findUserLikesTuit(uid: string, tid: string): Promise<Like | null> {
         return LikeModel.findOne({ tuit: tid, likedBy: uid });
     }
+
+    /**
+     * Remove like object from the database
+     * @param {string} uid User's Id
+     * @param {string} tid Tuit's Id
+     * @returns Promise when the like data is removed from the database
+     */
+    async userUnlikesTuit(uid: string, tid: string): Promise<any> {
+        return LikeModel.deleteOne({ tuit: tid, likedBy: uid });
+    }
 }

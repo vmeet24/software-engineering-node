@@ -89,8 +89,13 @@ export default class LikeController implements ILikeController {
                 .countHowManyLikedTuit(tid);
             let tuit = await this.tuitDao.findTuitById(tid);
             if (tuit != null) {
-                await this.likeDao.userLikesTuit(userId, tid);
-                tuit.stats.likes = howManyLikedTuit + 1;
+                if (userAlreadyLikedTuit) {
+                    await this.likeDao.userUnlikesTuit(userId, tid);
+                    tuit.stats.likes = howManyLikedTuit - 1;
+                } else {
+                    await this.likeDao.userLikesTuit(userId, tid);
+                    tuit.stats.likes = howManyLikedTuit + 1;
+                };
                 await this.tuitDao.updateLikes(tid, tuit.stats);
                 res.sendStatus(200);
             }
