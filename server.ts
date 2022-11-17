@@ -1,8 +1,14 @@
 /**
  * @file Implements an Express Node HTTP server.
  */
+
+require('dotenv').config({
+    path: "./.env"
+});
+
 import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
+import AuthenticationController from './Controllers/AuthenticationController';
 import BookmarkController from './Controllers/BookmarkController';
 import FollowController from './Controllers/FollowController';
 import LikeController from './Controllers/LikeController';
@@ -15,12 +21,34 @@ import LikeDao from './mongoose/LikeDao';
 import MessageDao from './mongoose/MessageDao';
 import TuitDao from './mongoose/TuitDao';
 import UserDao from './mongoose/UserDao';
-const cors = require('cors');
 const app = express();
-app.use(cors());
+
+let sess = {
+    secret: process.env.EXPRESS_SESSION_SECRET,
+    saveUninitialized: true,
+    resave: true,
+    cookie: {
+        sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax',
+        secure: process.env.NODE_ENV === "production",
+    }
+}
+
+if (process.env.ENV === 'PRODUCTION') {
+    app.set('trust proxy', 1) // trust first proxy
+    sess.cookie.secure = true // serve secure cookies
+}
+
+const session = require("express-session");
+const cors = require('cors');
+
+app.use(cors({
+    credentials: true,
+    origin: 'http://localhost:3000'
+}));
+app.use(session(sess))
 app.use(express.json());
 
-mongoose.connect(`mongodb+srv://${process.env.USER}:${process.env.PASS}@cluster0.2q2gfmo.mongodb.net/FSE?retryWrites=true&w=majority`);
+mongoose.connect(`mongodb+srv://${process.env.USER || "vmeet24"}:${process.env.PASS || "c1K7QUUbJcferkyi"}@cluster0.2q2gfmo.mongodb.net/fse-test?retryWrites=true&w=majority`);
 // client.connect((err: any) => {
 //     const collection = client.db("test").collection("devices");
 //     // perform actions on the collection object
@@ -29,6 +57,7 @@ mongoose.connect(`mongodb+srv://${process.env.USER}:${process.env.PASS}@cluster0
 
 
 const userDao = new UserDao();
+AuthenticationController(app, userDao);
 new UserController(app, userDao);
 
 const tuitDao = new TuitDao();
