@@ -2,6 +2,7 @@
  * @file Declares API for Tuit related data access object methods
  */
 
+import Stats from "../models/Stats";
 import Tuit from "../models/Tuit";
 
 export default interface ITuitDao {
@@ -12,4 +13,5 @@ export default interface ITuitDao {
     updateTuit(tid: string, tuit: Tuit): Promise<any>;
     deleteTuit(tid: string): Promise<any>;
     deleteTuitByUserId(uid: string): Promise<any>;
+    updateLikes(tid: string, newStats: Stats): Promise<any>;
 }

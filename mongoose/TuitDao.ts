@@ -4,6 +4,7 @@
  */
 
 import ITuitDao from "../interfaces/ITuitDao";
+import Stats from "../models/Stats";
 import Tuit from "../models/Tuit";
 import TuitModel from "./TuitModel";
 
@@ -78,4 +79,13 @@ export default class TuitDao implements ITuitDao {
         return await TuitModel.deleteMany({ postedBy: uid });
     }
 
+
+    /**
+    * Updates tuit with new stats values in database
+    * @param {string} tid Primary key of tuit to be updated
+    * @returns Promise To be notified when tuit is updated in the database
+    */
+    async updateLikes(tid: string, newStats: Stats): Promise<any> {
+        return await TuitModel.updateOne({ _id: tid }, { $set: { stats: newStats } });
+    }
 }
