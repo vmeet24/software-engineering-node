@@ -8,15 +8,12 @@ const saltRounds = 10;
 const AuthenticationController = (app: Express, userDao: IUserDao) => {
 
   const login = async (req: any, res: any) => {
-    console.log("existingUser", req);
-  
+
     const user = req.body;
     const username = user.username;
     const password = user.password;
-    const existingUser = await userDao
-      .findUserByUsername(username);
+    const existingUser = await userDao.findUserByUsername(username);
 
-    console.log("existingUser", existingUser);
 
     if (!existingUser) {
       res.sendStatus(403);
@@ -50,8 +47,6 @@ const AuthenticationController = (app: Express, userDao: IUserDao) => {
       const insertedUser = await userDao
         .createUser(newUser);
       insertedUser.password = '';
-      console.log(req.session);
-      
       req.session['profile'] = insertedUser;
       res.json(insertedUser);
     }
