@@ -79,6 +79,7 @@ export default class TuitDao implements ITuitDao {
         return await TuitModel.deleteMany({ postedBy: uid });
     }
 
+
     /**
     * Updates tuit with new stats values in database
     * @param {string} tid Primary key of tuit to be updated
