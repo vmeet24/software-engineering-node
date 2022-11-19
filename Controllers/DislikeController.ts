@@ -12,6 +12,8 @@ import ITuitDao from "../interfaces/ITuitDao";
  * @class DislikeController Implements RESTful Web service API for dislikes resource.
  * Defines the following HTTP endpoints:
  * <ul>
+*      <li>GET /api/users/:uid/dislikes to retrieve all the tuits disliked by a user
+ *     </li>
  *     <li>GET /api/users/:uid/dislikes/:tid to record if a user dislikes a tuit
  *     </li>
  *     <li>PUT /api/users/:uid/dislikes/:tid to toggle a user dislikes a tuit
@@ -37,8 +39,39 @@ export default class DislikeController implements IDislikeController {
         this.dislikeDao = dislikeDao;
         this.likeDao = likeDao;
         this.tuitDao = tuitDao;
+        app.get("/api/users/:uid/dislikes", this.findAllTuitsDislikedByUser);
         app.get("/api/users/:uid/dislikes/:tid", this.findUserDislikedTuit);
         app.put("/api/users/:uid/dislikes/:tid", this.userTogglesTuitDislikes);
+    }
+
+
+
+    /**
+     * Retrieves all tuits disliked by a user from the database
+     * @param {Request} req Represents request from client, including the path
+     * parameter uid representing the user liked the tuits
+     * @param {Response} res Represents response to client, including the
+     * body formatted as JSON arrays containing the tuit objects that were liked
+     */
+    findAllTuitsDislikedByUser = async (req: Request, res: Response) => {
+        console.log("req", req);
+
+        const uid = req.params.uid;
+        console.log("req.params.uid", req.params.uid);
+
+        // @ts-ignore
+        const profile = req.session['profile'];
+        const userId = uid === 'me' && profile ?
+            profile._id : uid;
+
+        if (userId === "me") {
+            res.sendStatus(503);
+            return;
+        }
+        const dislikes = await this.dislikeDao.findAllTuitsDislikedByUser(userId)
+        const dislikesNonNullTuits = dislikes.filter(dislike => dislike.tuit);
+        const tuitsFromDislikes = dislikesNonNullTuits.map(dislike => dislike.tuit);
+        res.json(tuitsFromDislikes);
     }
 
     /**
