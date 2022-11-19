@@ -67,8 +67,24 @@ export default class LikeController implements ILikeController {
      * body formatted as JSON arrays containing the tuit objects that were liked
      */
     findAllTuitsLikedByUser = async (req: Request, res: Response) => {
-        const tuits = await this.likeDao.findAllTuitsLikedByUser(req.params.uid)
-        res.json(tuits);
+        console.log("req", req);
+
+        const uid = req.params.uid;
+        console.log("req.params.uid", req.params.uid);
+
+        // @ts-ignore
+        const profile = req.session['profile'];
+        const userId = uid === 'me' && profile ?
+            profile._id : uid;
+
+        if (userId === "me") {
+            res.sendStatus(503);
+            return;
+        }
+        const likes = await this.likeDao.findAllTuitsLikedByUser(userId)
+        const likesNonNullTuits = likes.filter(like => like.tuit);
+        const tuitsFromLikes = likesNonNullTuits.map(like => like.tuit);
+        res.json(tuitsFromLikes);
     }
 
     /**
