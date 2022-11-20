@@ -5,6 +5,21 @@
     "rootDir": "./",
     "outDir": "./build",
     "esModuleInterop": true,
+    "sourceMap": true,
     "strict": true
-  }
+  },
+  "moduleResolution": "node",
+  "files": [
+    "test.ts"
+  ],
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "typeRoots": [
+    "./types",
+    "./node_modules/@types"
+  ]
 }
