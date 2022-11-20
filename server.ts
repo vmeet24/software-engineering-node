@@ -10,12 +10,14 @@ import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import AuthenticationController from './Controllers/AuthenticationController';
 import BookmarkController from './Controllers/BookmarkController';
+import DislikeController from './Controllers/DislikeController';
 import FollowController from './Controllers/FollowController';
 import LikeController from './Controllers/LikeController';
 import MessageController from './Controllers/MessageController';
 import TuitController from './Controllers/TuitController';
 import UserController from './Controllers/UserController';
 import BookmarkDao from './mongoose/BookmarkDao';
+import DislikeDao from './mongoose/DislikeDao';
 import FollowDao from './mongoose/FollowDao';
 import LikeDao from './mongoose/LikeDao';
 import MessageDao from './mongoose/MessageDao';
@@ -48,7 +50,7 @@ app.use(cors({
 app.use(session(sess))
 app.use(express.json());
 
-mongoose.connect(`mongodb+srv://${process.env.USER || "vmeet24"}:${process.env.PASS || "c1K7QUUbJcferkyi"}@cluster0.2q2gfmo.mongodb.net/fse-test?retryWrites=true&w=majority`);
+mongoose.connect(`mongodb+srv://${process.env.USER}:${process.env.PASS}@cluster0.2q2gfmo.mongodb.net/fse-test?retryWrites=true&w=majority`);
 // client.connect((err: any) => {
 //     const collection = client.db("test").collection("devices");
 //     // perform actions on the collection object
@@ -63,8 +65,10 @@ new UserController(app, userDao);
 const tuitDao = new TuitDao();
 new TuitController(app, tuitDao);
 
+const dislikeDao = new DislikeDao();
 const likesDao = new LikeDao();
-new LikeController(app, likesDao, tuitDao);
+new DislikeController(app, dislikeDao, likesDao, tuitDao);
+new LikeController(app, likesDao, dislikeDao, tuitDao);
 
 const followDao = new FollowDao();
 new FollowController(app, followDao);

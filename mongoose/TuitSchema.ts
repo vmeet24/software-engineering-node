@@ -20,7 +20,8 @@ const TuitSchema = new mongoose.Schema({
     stats: {
         replies: { type: Number, default: 0 },
         retuits: { type: Number, default: 0 },
-        likes: { type: Number, default: 0 }
+        likes: { type: Number, default: 0 },
+        dislikes: { type: Number, default: 0 }
     }
 
 }, { collection: 'tuits' });
