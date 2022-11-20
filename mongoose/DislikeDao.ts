@@ -54,4 +54,21 @@ export default class DislikeDao implements IDislikeDao {
         return DislikeModel.count({ tuit: tid });
     }
 
+    /**
+     * Retrieve all tuits that disliked by the given user
+     * @param {string} uid User's Id
+     * @returns Promise when the tuits data is available from the database
+     */
+    async findAllTuitsDislikedByUser(uid: string): Promise<Dislike[]> {
+        return DislikeModel
+            .find({ dislikedBy: uid })
+            .populate({
+                path: "tuit",         // replace tuit reference with actual document
+                populate: {
+                    path: "postedBy" // replace tuit's postedBy reference with actual user document
+                }
+            })
+            .exec();
+    }
+
 }
