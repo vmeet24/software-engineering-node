@@ -4,6 +4,7 @@
 import { Express, Request, Response } from "express";
 import ILikeController from "../interfaces/ILikeController";
 import ILikeDao from "../interfaces/ILikeDao";
+import ITuitDao from "../interfaces/ITuitDao";
 
 /**
  * @class TuitController Implements RESTful Web service API for likes resource.
@@ -25,6 +26,7 @@ import ILikeDao from "../interfaces/ILikeDao";
 export default class LikeController implements ILikeController {
     private likeDao: ILikeDao;
     private app: Express;
+    private tuitDao: ITuitDao;
     /**
      * Creates controller instance
      * @param {ILikeDao} likeDao DAO implementing likes CRUD operations
@@ -32,13 +34,13 @@ export default class LikeController implements ILikeController {
      * API
      * @return TuitController
      */
-    constructor(app: Express, likeDao: ILikeDao) {
+    constructor(app: Express, likeDao: ILikeDao, tuitDao: ITuitDao) {
         this.app = app;
         this.likeDao = likeDao;
+        this.tuitDao = tuitDao;
         this.app.get("/api/users/:uid/likes", this.findAllTuitsLikedByUser);
         this.app.get("/api/tuits/:tid/likes", this.findAllUsersThatLikedTuit);
-        this.app.post("/api/users/:uid/likes/:tid", this.userLikesTuit);
-        this.app.delete("/api/users/:uid/unlikes/:tid", this.userUnlikesTuit);
+        this.app.put("/api/users/:uid/likes/:tid", this.userTogglesTuitLikes);
     }
 
     /**
@@ -66,30 +68,42 @@ export default class LikeController implements ILikeController {
         res.json(tuits);
     }
 
-
     /**
-     * @param {Request} req Represents request from client, including the
-     * path parameters uid and tid representing the user that is liking the tuit
-     * and the tuit being liked
-     * @param {Response} res Represents response to client, including the
-     * body formatted as JSON containing the new likes that was inserted in the
-     * database
-     */
-    userLikesTuit = async (req: Request, res: Response) => {
-        const result = this.likeDao.userLikesTuit(req.params.uid, req.params.tid)
-        res.json(result);
-    }
-
-
-    /**
+     * Method to toggle the likes button.
      * @param {Request} req Represents request from client, including the
      * path parameters uid and tid representing the user that is unliking
      * the tuit and the tuit being unliked
      * @param {Response} res Represents response to client, including status
      * on whether deleting the like was successful or not
      */
-    userUnlikesTuit = async (req: Request, res: Response) => {
-        const status = await this.likeDao.userUnlikesTuit(req.params.uid, req.params.tid)
-        res.send(status);
+    userTogglesTuitLikes = async (req: any, res: any) => {
+        const uid = req.params.uid;
+        const tid = req.params.tid;
+        const profile = req.session['profile'];
+        const userId = uid === "me" && profile ?
+            profile._id : uid;
+        try {
+            const userAlreadyLikedTuit = await this.likeDao
+                .findUserLikesTuit(userId, tid);
+            const howManyLikedTuit = await this.likeDao
+                .countHowManyLikedTuit(tid);
+            let tuit = await this.tuitDao.findTuitById(tid);
+            if (tuit != null) {
+                if (userAlreadyLikedTuit) {
+                    await this.likeDao.userUnlikesTuit(userId, tid);
+                    tuit.stats.likes = howManyLikedTuit - 1;
+                } else {
+                    await this.likeDao.userLikesTuit(userId, tid);
+                    tuit.stats.likes = howManyLikedTuit + 1;
+                };
+                await this.tuitDao.updateLikes(tid, tuit.stats);
+                res.sendStatus(200);
+            }
+            else {
+                res.sendStatus(404);
+            }
+        } catch (e) {
+            res.sendStatus(404);
+        }
     }
 };

@@ -64,7 +64,7 @@ const tuitDao = new TuitDao();
 new TuitController(app, tuitDao);
 
 const likesDao = new LikeDao();
-new LikeController(app, likesDao);
+new LikeController(app, likesDao, tuitDao);
 
 const followDao = new FollowDao();
 new FollowController(app, followDao);

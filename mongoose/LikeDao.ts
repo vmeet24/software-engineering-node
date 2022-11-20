@@ -44,6 +44,15 @@ export default class LikeDao implements ILikeDao {
     }
 
     /**
+   * Counts total like object of given id from the database
+   * @param {string} tid Tuit's Id
+   * @returns Promise when the like data is inserted into the database
+   */
+    async countHowManyLikedTuit(tid: string): Promise<number> {
+        return LikeModel.count({ tuit: tid });
+    }
+
+    /**
      * Inserts like object into the database
      * @param {string} uid User's Id
      * @param {string} tid Tuit's Id
@@ -51,6 +60,16 @@ export default class LikeDao implements ILikeDao {
      */
     async userLikesTuit(uid: string, tid: string): Promise<Like> {
         return LikeModel.create({ tuit: tid, likedBy: uid });
+    }
+
+    /**
+     * Find if tuit is liked by user
+     * @param {string} uid User's Id
+     * @param {string} tid Tuit's Id
+     * @returns Promise when the like data is retrieved from the database
+     */
+    async findUserLikesTuit(uid: string, tid: string): Promise<Like | null> {
+        return LikeModel.findOne({ tuit: tid, likedBy: uid });
     }
 
     /**

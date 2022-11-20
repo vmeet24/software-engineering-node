@@ -49,17 +49,16 @@ export default class TuitController implements ITuitController {
         res.json(result);
     }
     createTuitByUser = async (req: any, res: any) => {
-        let userId = req.params.uid === "me"
+        let userId = req.params.userid === "me"
             && req.session['profile'] ?
             req.session['profile']._id :
             req.params.uid;
-
         const tuit = await this.tuitDao.createTuit(userId, req.body);
         res.json(tuit);
     }
 
     findTuitsByUser = async (req: any, res: any) => {
-        let userId = req.params.uid === "me"
+        let userId = req.params.userid === "me"
             && req.session['profile'] ?
             req.session['profile']._id :
             req.params.uid;
